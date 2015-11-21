@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  SFMainCollectionViewController.h
 //  SharkFeed
 //
 //  Created by Yifan Xiao on 11/20/15.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface SFMainCollectionViewController : UICollectionViewController
 
 @end
-
