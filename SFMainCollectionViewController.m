@@ -33,7 +33,11 @@
 
 [self.flickr searchFlickrWithcompletionBlock:^(NSArray *results, NSError *error) {
     
-        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            
+            [self.searchResults addObjectsFromArray:results];
+            [self.collectionView reloadData];
+        });
 }];
     
 }
@@ -69,22 +73,22 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:mainCollectionViewCellReuseIdentifier forIndexPath:indexPath];
 
-    cell.backgroundColor = [UIColor whiteColor];
+    cell.backgroundColor = [UIColor blackColor];
 
     return cell;
 }
 
 #pragma mark – UICollectionViewDelegateFlowLayout
 
-// 1
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-
-    FlickrPhoto *photo =
-    self.searchResults[indexPath.row];
-    // 2
-    CGSize retval = photo.thumbnail.size.width > 0 ? photo.thumbnail.size : CGSizeMake(100, 100);
-    retval.height += 35; retval.width += 35; return retval;
-}
+//// 1
+//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+//
+//    FlickrPhoto *photo =
+//    self.searchResults[indexPath.row];
+//    // 2
+//    CGSize retval = photo.thumbnail.size.width > 0 ? photo.thumbnail.size : CGSizeMake(100, 100);
+//    retval.height += 35; retval.width += 35; return retval;
+//}
 
 // 3
 - (UIEdgeInsets)collectionView:

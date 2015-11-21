@@ -40,8 +40,6 @@
                                 NSURLResponse *response,
                                 NSError *error) {
                 
-                //NSLog(@"Response:%@", response);
-                
                 NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
                 
                 if (httpResp.statusCode == 200) {
@@ -49,91 +47,62 @@
                     NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data
                                                                                options:NSJSONReadingAllowFragments
                                                                                  error:&jsonError];
+                                        
+                    /**
+                     *  Description
+                     */
+                    
+                    if(error != nil)
+                    {
+                        completionBlock(nil,error);
+                    }
+                    else
+                    {
+                        NSString * status = dictionary[@"stat"];
+                        if ([status isEqualToString:@"fail"]) {
+                            NSError * error = [[NSError alloc] initWithDomain:@"FlickrSearch" code:0 userInfo:@{NSLocalizedFailureReasonErrorKey: dictionary[@"message"]}];
+                            completionBlock(nil, error);
+                        } else {
+                            
+                            NSArray *objPhotos = dictionary[@"photos"][@"photo"];
+                            NSMutableArray *flickrPhotos = [@[] mutableCopy];
+                            for(NSMutableDictionary *objPhoto in objPhotos)
+                            {
+                                FlickrPhoto *photo = [[FlickrPhoto alloc] init];
+                                photo.farm = [objPhoto[@"farm"] intValue];
+                                photo.server = [objPhoto[@"server"] intValue];
+                                photo.secret = objPhoto[@"secret"];
+                                photo.photoID = [objPhoto[@"id"] longLongValue];
+                                
+                                NSString *searchURL = [Flickr flickrPhotoURLForFlickrPhoto:photo size:@"m"];
+                                NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:searchURL]
+                                                                          options:0
+                                                                            error:&error];
+                                UIImage *image = [UIImage imageWithData:imageData];
+                                photo.thumbnail = image;
+                                
+                                [flickrPhotos addObject:photo];
+                            }
+                            
+                            completionBlock(flickrPhotos,nil);
+                        }
+                    }
                     
                     
-                    completionBlock(dictionary[@"photos"][@"photo"], nil);
-                    
+                    /**
+                     *  Description
+                     */
                     
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 }
                 else{
                     
-                    NSLog(@"Fail not 200");
+                    completionBlock(nil, error);
                     
-                    dispatch_async(dispatch_get_main_queue(), ^{
-
-                            //handle the situation if the network connection is failed.
-                            UIAlertView *failure = [[UIAlertView alloc] initWithTitle:@"Network Error" message:@"network is not available right now, check it out later" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                            
-                            [failure show];
-                        
-                    });
                 }
                 
             }] resume];
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-//    
-//    dispatch_async(queue, ^{
-//        NSError *error = nil;
-//        NSString *searchResultString = [NSString stringWithContentsOfURL:[NSURL URLWithString:searchURL]
-//                                                           encoding:NSUTF8StringEncoding
-//                                                              error:&error];
-//        if (error != nil) {
-//            completionBlock(nil,error);
-//        }
-//        else
-//        {
-//            // Parse the JSON Response
-//            NSData *jsonData = [searchResultString dataUsingEncoding:NSUTF8StringEncoding];
-//            NSDictionary *searchResultsDict = [NSJSONSerialization JSONObjectWithData:jsonData
-//                                                                              options:kNilOptions
-//                                                                                error:&error];
-//            if(error != nil)
-//            {
-//                completionBlock(nil,error);
-//            }
-//            else
-//            {
-//                NSString * status = searchResultsDict[@"stat"];
-//                if ([status isEqualToString:@"fail"]) {
-//                    NSError * error = [[NSError alloc] initWithDomain:@"FlickrSearch" code:0 userInfo:@{NSLocalizedFailureReasonErrorKey: searchResultsDict[@"message"]}];
-//                    completionBlock(nil, error);
-//                } else {
-//                
-//                    NSArray *objPhotos = searchResultsDict[@"photos"][@"photo"];
-//                    NSMutableArray *flickrPhotos = [@[] mutableCopy];
-//                    for(NSMutableDictionary *objPhoto in objPhotos)
-//                    {
-//                        FlickrPhoto *photo = [[FlickrPhoto alloc] init];
-//                        photo.farm = [objPhoto[@"farm"] intValue];
-//                        photo.server = [objPhoto[@"server"] intValue];
-//                        photo.secret = objPhoto[@"secret"];
-//                        photo.photoID = [objPhoto[@"id"] longLongValue];
-//                        
-//                        NSString *searchURL = [Flickr flickrPhotoURLForFlickrPhoto:photo size:@"m"];
-//                        NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:searchURL]
-//                                                                  options:0
-//                                                                    error:&error];
-//                        UIImage *image = [UIImage imageWithData:imageData];
-//                        photo.thumbnail = image;
-//                        
-//                        [flickrPhotos addObject:photo];
-//                    }
-//                    
-//                    completionBlock(flickrPhotos,nil);
-//                }
-//            }
-//        }
-//    });
+
 }
 
 + (void)loadImageForPhoto:(FlickrPhoto *)flickrPhoto thumbnail:(BOOL)thumbnail completionBlock:(FlickrPhotoCompletionBlock) completionBlock
