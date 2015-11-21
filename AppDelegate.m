@@ -20,7 +20,21 @@
     
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"header"] forBarMetrics:UIBarMetricsDefault];
     
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.splashScreenController = [storyboard instantiateViewControllerWithIdentifier:@"splashScreen"];
+    [self.window addSubview:self.splashScreenController.view];
+    [self.window makeKeyAndVisible];
+    [NSTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(onSlashScreenDone) userInfo:nil repeats:NO];
+    
     return YES;
+}
+
+-(void)onSlashScreenDone{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    [self.splashScreenController.view removeFromSuperview];
+    self.flickrViewController = [storyboard instantiateViewControllerWithIdentifier:@"flickrPhotoController"];
+    [self.window addSubview:self.flickrViewController.view];
+    [self.window makeKeyAndVisible];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
