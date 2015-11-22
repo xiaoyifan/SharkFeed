@@ -47,7 +47,7 @@
                                 <size key="customSize" width="100" height="100"/>
                                 <connections>
                                     <outlet property="itemImageView" destination="mVy-ds-WY1" id="gPQ-nO-pg1"/>
-                                    <segue destination="iXc-4Q-gCo" kind="presentation" identifier="detailSegue" id="iAm-X3-646"/>
+                                    <segue destination="iXc-4Q-gCo" kind="presentation" identifier="detailSegue" modalPresentationStyle="fullScreen" modalTransitionStyle="flipHorizontal" id="aJt-cN-FAS"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -60,7 +60,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mp2-UG-K5J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1210" y="1371"/>
+            <point key="canvasLocation" x="974" y="1007"/>
         </scene>
         <!--Image Detail View Controller-->
         <scene sceneID="w8f-cG-NuM">
@@ -99,6 +99,7 @@
                                 </state>
                                 <connections>
                                     <action selector="openInFlickrApp:" destination="iXc-4Q-gCo" eventType="touchUpInside" id="utA-KS-c4G"/>
+                                    <segue destination="NIj-AL-gKs" kind="presentation" identifier="openInWeb" id="6lk-O7-0ua"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1y6-Ch-KPb">
@@ -185,7 +186,50 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Ws-si-Vi1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2048" y="1394"/>
+            <point key="canvasLocation" x="1856" y="1098"/>
+        </scene>
+        <!--Web View Controller-->
+        <scene sceneID="h02-Yh-w6R">
+            <objects>
+                <viewController id="9sg-RE-kaa" customClass="SFWebViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="P2j-uN-VhQ"/>
+                        <viewControllerLayoutGuide type="bottom" id="exz-NM-lJJ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8fE-VN-b3r">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qYe-fY-XJ5">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="qYe-fY-XJ5" firstAttribute="top" secondItem="8fE-VN-b3r" secondAttribute="top" id="HDr-qY-bu7"/>
+                            <constraint firstItem="qYe-fY-XJ5" firstAttribute="bottom" secondItem="exz-NM-lJJ" secondAttribute="top" id="Rmp-CJ-P68"/>
+                            <constraint firstAttribute="trailing" secondItem="qYe-fY-XJ5" secondAttribute="trailing" id="Yzx-jd-CDx"/>
+                            <constraint firstItem="qYe-fY-XJ5" firstAttribute="leading" secondItem="8fE-VN-b3r" secondAttribute="leading" id="gFM-gz-FvH"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="EMo-qs-JPy">
+                        <barButtonItem key="rightBarButtonItem" image="cancel" id="xr2-Bm-JQ7">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="dismissViewController:" destination="9sg-RE-kaa" id="bV9-Wq-Gw7"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="flickrWebView" destination="qYe-fY-XJ5" id="upl-oC-drf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CT0-Ca-7nD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2722" y="1887"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Jmb-48-mJ1">
@@ -204,7 +248,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jkb-Z7-2nO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="398" y="1371"/>
+            <point key="canvasLocation" x="234" y="983"/>
         </scene>
         <!--Splash Screen View Controller-->
         <scene sceneID="gUm-pF-Ehi">
@@ -244,6 +288,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pNU-hm-SwQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-13" y="2178"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="B8T-sy-ajd">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="NIj-AL-gKs" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="JBg-0W-has">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="9sg-RE-kaa" kind="relationship" relationship="rootViewController" id="B0G-G7-mOA"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Sca-e8-6To" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1910" y="1887"/>
         </scene>
     </scenes>
     <resources>
