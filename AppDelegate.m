@@ -35,6 +35,7 @@
     self.flickrViewController = [storyboard instantiateViewControllerWithIdentifier:@"flickrPhotoController"];
     [self.window addSubview:self.flickrViewController.view];
     [self.window makeKeyAndVisible];
+    self.window.rootViewController = self.flickrViewController;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

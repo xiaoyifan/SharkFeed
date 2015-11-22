@@ -78,7 +78,10 @@
                                 photo.secret = objPhoto[@"secret"];
                                 photo.photoID = [objPhoto[@"id"] longLongValue];
                                 photo.thumbnailURL = objPhoto[@"url_t"];
+                                photo.mediumURL = objPhoto[@"url_c"];
                                 photo.largeURL = objPhoto[@"url_l"];
+                                photo.originalURL = objPhoto[@"url_o"];
+                                
                                 photo.title = objPhoto[@"title"];
                                 
                                 [flickrPhotos addObject:photo];
@@ -100,42 +103,5 @@
             }] resume];
 
 }
-
-+ (void)loadImageForPhoto:(FlickrPhoto *)flickrPhoto thumbnail:(BOOL)thumbnail completionBlock:(FlickrPhotoCompletionBlock) completionBlock
-{
-    
-    NSString *size = thumbnail ? @"m" : @"b";
-    
-    NSString *searchURL = [Flickr flickrPhotoURLForFlickrPhoto:flickrPhoto size:size];
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    
-    dispatch_async(queue, ^{
-        NSError *error = nil;
-        
-        NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:searchURL]
-                                                  options:0
-                                                    error:&error];
-        if(error)
-        {
-            completionBlock(nil,error);
-        }
-        else
-        {
-            UIImage *image = [UIImage imageWithData:imageData];
-            if([size isEqualToString:@"m"])
-            {
-                flickrPhoto.thumbnail = image;
-            }
-            else
-            {
-                flickrPhoto.largeImage = image;
-            }
-            completionBlock(image,nil);
-        }
-        
-    });
-}
-
-
 
 @end

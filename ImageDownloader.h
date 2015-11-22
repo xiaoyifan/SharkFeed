@@ -14,7 +14,7 @@
 @property (nonatomic, strong) FlickrPhoto * record;
 @property (nonatomic, copy) void (^completionHandler)(void);
 
-- (void)startDownload:(int)type;
+- (void)startDownload:(ImageSize)type;
 - (void)cancelDownload;
 
 @end

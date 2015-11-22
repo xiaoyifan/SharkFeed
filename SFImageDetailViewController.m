@@ -32,7 +32,7 @@
         }
         
     };
-    [self.downloader startDownload:FlickrLargeImage];
+    [self.downloader startDownload:LargeImage];
 }
 
 - (void)didReceiveMemoryWarning {

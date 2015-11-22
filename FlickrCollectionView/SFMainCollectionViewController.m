@@ -131,7 +131,7 @@
             
         }];
         (self.downloadingTask)[indexPath] = iconDownloader;
-        [iconDownloader startDownload:FlickrThumbnailImage];
+        [iconDownloader startDownload:ThumbnailImage];
     }
     
 }
@@ -248,7 +248,6 @@
     CGRect frame = CGRectMake(self.refreshControll.bounds.origin.x, self.refreshControll.bounds.origin.y, self.refreshControll.bounds.size.width, 100);
     
     customNibView.frame = frame;
-    //customNibView.clipsToBounds = YES;
     
     [self.refreshControll addSubview:customNibView];
 }
@@ -256,11 +255,13 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     
+    if ([segue.identifier isEqualToString:@"detailSegue"]) {
         NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
         SFImageDetailViewController *destViewController = segue.destinationViewController;
         NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
         destViewController.record = (self.searchResults)[indexPath.row];
         [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
+    }
     
 }
 
