@@ -11,8 +11,6 @@
 
 @interface Flickr ()
 
-@property (nonatomic, strong) NSOperationQueue *queue;
-
 @end
 @implementation Flickr
 
@@ -21,14 +19,11 @@
     return [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=%@&tags=shark&format=json&nojsoncallback=1&page=%d&extras=url_t,url_c,url_l,url_o", apiKey,page];
 }
 
-+ (NSString *)flickrPhotoURLForFlickrPhoto:(FlickrPhoto *) flickrPhoto size:(NSString *) size
-{
-    if(!size)
-    {
-        size = @"m";
-    }
-    return [NSString stringWithFormat:@"http://farm%ld.staticflickr.com/%ld/%lld_%@_%@.jpg",(long)flickrPhoto.farm,(long)flickrPhoto.server,flickrPhoto.photoID,flickrPhoto.secret,size];
++(NSString *)flickrPhotoDetailURLForPhoto:(long long)photoID{
+    
+    return [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=%@&photo_id=%lld&format=json&nojsoncallback=1", apiKey, photoID];
 }
+
 
 - (void)searchFlickrInPage:(int)page WithcompletionBlock:(FlickrSearchCompletionBlock) completionBlock
 {
@@ -48,7 +43,6 @@
                 NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
                 
                 if (httpResp.statusCode == 200) {
-                    self.queue = [NSOperationQueue new];
                     NSError *jsonError;
                     NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data
                                                                                options:NSJSONReadingAllowFragments
@@ -81,7 +75,7 @@
                                 photo.mediumURL = objPhoto[@"url_c"];
                                 photo.largeURL = objPhoto[@"url_l"];
                                 photo.originalURL = objPhoto[@"url_o"];
-                                
+                                photo.author = objPhoto[@"owner"];
                                 photo.title = objPhoto[@"title"];
                                 
                                 [flickrPhotos addObject:photo];
@@ -102,6 +96,108 @@
                 
             }] resume];
 
+}
+
+- (void)searchFlickrUserWithPhoto:(long long)photoID WithcompletionBlock:(FlickrUserCompletionBlock)completionBlock{
+  
+    NSString *searchURL = [Flickr flickrPhotoDetailURLForPhoto:photoID];
+
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    
+    // Create NSUrlSession
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // Create data download task
+    [[session dataTaskWithURL:[NSURL URLWithString:searchURL]
+            completionHandler:^(NSData *data,
+                                NSURLResponse *response,
+                                NSError *error) {
+                
+                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
+                
+                if (httpResp.statusCode == 200) {
+                    NSError *jsonError;
+                    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data
+                                                                               options:NSJSONReadingAllowFragments
+                                                                                 error:&jsonError];
+                    
+                    if(jsonError != nil)
+                    {
+                        completionBlock(nil,error);
+                    }
+                    else
+                    {
+                        
+                        NSString * status = dictionary[@"stat"];
+                        if ([status isEqualToString:@"fail"]) {
+                            NSError * error = [[NSError alloc] initWithDomain:@"FlickrSearch" code:0 userInfo:@{NSLocalizedFailureReasonErrorKey: dictionary[@"message"]}];
+                            completionBlock(nil, error);
+                        } else {
+                            
+                            NSMutableDictionary *userDict = dictionary[@"photo"][@"owner"];
+
+                            FlickrUser *user = [FlickrUser new];
+                            user.user_id = userDict[@"nsid"];
+                            user.username = userDict[@"username"];
+                            user.realname = userDict[@"realname"];
+                            user.location = userDict[@"location"];
+                            user.iconServer = [userDict[@"iconserver"] intValue];
+                            user.iconFarm = [userDict[@"iconfarm"] intValue];
+                            
+                            completionBlock(user,nil);
+                        }
+                    }
+                    
+                    
+                    
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                }
+                else{
+                    
+                    completionBlock(nil, error);
+                    
+                }
+                
+            }] resume];
+    
+}
+
+- (void)getSelfieImageForUser:(FlickrUser *)user WithcompletionBlock:(FlickrImageCompletionBlock)completionBlock{
+    
+    //URL format: http://farm{icon-farm}.staticflickr.com/{icon-server}/buddyicons/{nsid}.jpg
+    
+    NSString *searchURL = [NSString stringWithFormat:@"https://farm%ld.staticflickr.com/%ld/buddyicons/%@.jpg", (long)user.iconFarm, (long)user.iconServer, user.user_id];
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    
+    // Create NSUrlSession
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    // Create data download task
+    [[session dataTaskWithURL:[NSURL URLWithString:searchURL]
+            completionHandler:^(NSData *data,
+                                NSURLResponse *response,
+                                NSError *error) {
+                
+                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
+                
+                if (httpResp.statusCode == 200) {
+                    
+                    UIImage *image = [UIImage imageWithData:data];
+                    completionBlock(image,nil);
+                    
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                }
+                else{
+                    
+                    completionBlock(nil, error);
+                    
+                }
+                
+            }] resume];
+    
+    
+    
 }
 
 @end

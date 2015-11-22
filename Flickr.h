@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "FlickrUser.h"
+
 @class FlickrPhoto;
 
 typedef void (^FlickrSearchCompletionBlock)(NSArray *results, NSError *error);
-typedef void (^FlickrPhotoCompletionBlock)(UIImage *photoImage, NSError *error);
+typedef void (^FlickrUserCompletionBlock)(FlickrUser *user, NSError *error);
+typedef void (^FlickrImageCompletionBlock)(UIImage *image, NSError *error);
 
 @interface Flickr : NSObject
 
@@ -20,7 +23,7 @@ typedef void (^FlickrPhotoCompletionBlock)(UIImage *photoImage, NSError *error);
 @property (nonatomic, assign) NSInteger pageNum;
 
 - (void)searchFlickrInPage:(int)page WithcompletionBlock:(FlickrSearchCompletionBlock) completionBlock;
-+ (void)loadImageForPhoto:(FlickrPhoto *)flickrPhoto thumbnail:(BOOL)thumbnail completionBlock:(FlickrPhotoCompletionBlock) completionBlock;
-+ (NSString *)flickrPhotoURLForFlickrPhoto:(FlickrPhoto *) flickrPhoto size:(NSString *) size;
+- (void)searchFlickrUserWithPhoto:(long long)photoID WithcompletionBlock:(FlickrUserCompletionBlock)completionBlock;
+- (void)getSelfieImageForUser:(FlickrUser *)user WithcompletionBlock:(FlickrImageCompletionBlock)completionBlock;
 
 @end

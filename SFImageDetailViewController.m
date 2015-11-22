@@ -8,11 +8,21 @@
 
 #import "SFImageDetailViewController.h"
 #import "ImageDownloader.h"
+#import "Flickr.h"
 
 @interface SFImageDetailViewController ()
 
+@property(nonatomic, strong) Flickr *flickr;
+
 @property (weak, nonatomic) IBOutlet UIImageView *detailImageView;
 @property (strong, nonatomic) ImageDownloader *downloader;
+
+@property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
+
+@property (weak, nonatomic) IBOutlet UIImageView *authorhIconImageView;
+@property (weak, nonatomic) IBOutlet UILabel *authorLabel;
+
+@property (strong, nonatomic) FlickrUser *user;
 
 @end
 
@@ -21,6 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.flickr = [Flickr new];
     self.downloader =  [[ImageDownloader alloc] init];
     self.downloader.record = self.record;
     __weak FlickrPhoto *weakRecord = self.record;
@@ -41,6 +52,33 @@
         
     };
     [self.downloader startDownload:LargeImage];
+    self.descriptionLabel.text = self.record.title;
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    
+    [self searchOwnerOfPhoto:self.record.photoID];
+}
+
+//Json data fetching method.
+-(void)searchOwnerOfPhoto:(long long)photoID{
+    
+    __weak SFImageDetailViewController *weakSelf = self;
+    
+    [self.flickr searchFlickrUserWithPhoto:photoID WithcompletionBlock:^(FlickrUser *user, NSError *error) {
+        
+        [weakSelf.flickr getSelfieImageForUser:user WithcompletionBlock:^(UIImage *image, NSError *error) {
+            
+                     dispatch_async(dispatch_get_main_queue(), ^{
+            
+                         weakSelf.authorLabel.text = user.username;
+                         weakSelf.authorhIconImageView.image = image;
+                         weakSelf.user = user;
+                         
+                     });
+        }];
+     }];
+
 }
 
 - (void)didReceiveMemoryWarning {
