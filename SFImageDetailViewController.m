@@ -35,6 +35,11 @@
     self.flickr = [Flickr new];
     self.downloader =  [[ImageDownloader alloc] init];
     self.downloader.record = self.record;
+    self.descriptionLabel.text = self.record.title;
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    
     __weak FlickrPhoto *weakRecord = self.record;
     __weak SFImageDetailViewController *weakSelf = self;
     self.downloader.completionHandler = ^{
@@ -53,11 +58,6 @@
         
     };
     [self.downloader startDownload:LargeImage];
-    self.descriptionLabel.text = self.record.title;
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    
     [self searchOwnerOfPhoto:self.record.photoID];
 }
 

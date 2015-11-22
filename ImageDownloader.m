@@ -60,7 +60,15 @@
     NSBlockOperation* operation = [[NSBlockOperation alloc] init];
     
     UIImage* image = [self imageOfSize:type];
-    if (image) return;
+    if (image){
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            self.completionHandler();
+            
+        });
+        
+        return;
+    }
     
     __weak typeof (operation) operation_ = operation;
     [operation addExecutionBlock:^{
