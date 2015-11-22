@@ -62,10 +62,10 @@
             </objects>
             <point key="canvasLocation" x="1210" y="1371"/>
         </scene>
-        <!--View Controller-->
+        <!--Image Detail View Controller-->
         <scene sceneID="w8f-cG-NuM">
             <objects>
-                <viewController storyboardIdentifier="detailViewController" id="iXc-4Q-gCo" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="detailViewController" id="iXc-4Q-gCo" customClass="SFImageDetailViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="mam-7g-AKM"/>
                         <viewControllerLayoutGuide type="bottom" id="Oor-pc-nUG"/>
@@ -74,7 +74,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ota-1c-Nzm">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ota-1c-Nzm">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <animations/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -86,6 +86,9 @@
                                 <state key="normal" title="   download " image="download">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="downloadImageToAlbum:" destination="iXc-4Q-gCo" eventType="touchUpInside" id="QAI-Wh-Cv9"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DHN-HH-FzI">
                                 <rect key="frame" x="435" y="544" width="125" height="26"/>
@@ -94,6 +97,9 @@
                                 <state key="normal" title="   open in flickr" image="openinflickr">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="openInFlickrApp:" destination="iXc-4Q-gCo" eventType="touchUpInside" id="utA-KS-c4G"/>
+                                </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1y6-Ch-KPb">
                                 <rect key="frame" x="0.0" y="523" width="600" height="2"/>
@@ -107,6 +113,9 @@
                                 <rect key="frame" x="541" y="27" width="32" height="32"/>
                                 <animations/>
                                 <state key="normal" image="cancel"/>
+                                <connections>
+                                    <action selector="dismissDetailViewController:" destination="iXc-4Q-gCo" eventType="touchUpInside" id="j1w-Go-zGP"/>
+                                </connections>
                             </button>
                         </subviews>
                         <animations/>
@@ -134,6 +143,9 @@
                         </variation>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
+                    <connections>
+                        <outlet property="detailImageView" destination="Ota-1c-Nzm" id="QTe-Kc-Av2"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Ws-si-Vi1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -131,7 +131,7 @@
             
         }];
         (self.downloadingTask)[indexPath] = iconDownloader;
-        [iconDownloader startDownload:0];
+        [iconDownloader startDownload:FlickrThumbnailImage];
     }
     
 }
@@ -255,13 +255,13 @@
 
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    if([[segue identifier] isEqualToString:@"ContactsViewControllerSegue"]){
+    
         NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
         SFImageDetailViewController *destViewController = segue.destinationViewController;
         NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
         destViewController.record = (self.searchResults)[indexPath.row];
         [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
-    }
+    
 }
 
 

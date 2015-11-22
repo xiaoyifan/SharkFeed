@@ -7,8 +7,12 @@
 //
 
 #import "SFImageDetailViewController.h"
+#import "ImageDownloader.h"
 
 @interface SFImageDetailViewController ()
+
+@property (weak, nonatomic) IBOutlet UIImageView *detailImageView;
+@property (strong, nonatomic) ImageDownloader *downloader;
 
 @end
 
@@ -17,12 +21,89 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.downloader =  [[ImageDownloader alloc] init];
+    self.downloader.record = self.record;
+    __weak SFImageDetailViewController *weakSelf = self;
     
+    self.downloader.completionHandler = ^{
+        
+        if (weakSelf.downloader.record.largeImage) {
+            weakSelf.detailImageView.image = weakSelf.downloader.record.largeImage;
+        }
+        
+    };
+    [self.downloader startDownload:FlickrLargeImage];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)dismissDetailViewController:(id)sender {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+- (IBAction)downloadImageToAlbum:(id)sender {
+    
+    if (self.record.largeImage!= nil) {
+        UIImageWriteToSavedPhotosAlbum(self.record.largeImage,
+                                       self, // send the message to 'self' when calling the callback
+                                       @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                                       NULL);
+    }
+}
+
+//reference: http://stackoverflow.com/questions/7628048/ios-uiimagewritetosavedphotosalbum
+- (void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo {
+    if (error) {
+        
+        UIAlertController * alert=   [UIAlertController
+                                      alertControllerWithTitle:@"Something wrong"
+                                      message:@""
+                                      preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* ok = [UIAlertAction
+                             actionWithTitle:@"Gotcha"
+                             style:UIAlertActionStyleDefault
+                             handler:^(UIAlertAction * action)
+                             {
+                                 [alert dismissViewControllerAnimated:YES completion:nil];
+                                 
+                             }];
+        [alert addAction:ok];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+        
+    } else {
+        
+        
+        UIAlertController * alert=   [UIAlertController
+                                      alertControllerWithTitle:@"Image Saved!"
+                                      message:@""
+                                      preferredStyle:
+                                      UIAlertControllerStyleAlert];
+        UIAlertAction* ok = [UIAlertAction
+                             actionWithTitle:@"OK"
+                             style:UIAlertActionStyleDefault
+                             handler:^(UIAlertAction * action)
+                             {
+                                 [alert dismissViewControllerAnimated:YES completion:nil];
+                                 
+                             }];
+        [alert addAction:ok];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    }
+}
+
+- (IBAction)openInFlickrApp:(id)sender {
+    
+    
 }
 
 /*

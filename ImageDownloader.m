@@ -18,8 +18,14 @@
 
 -(void) startDownload:(int)type{
     
+    NSURLRequest *request = nil;
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.record.thumbnailURL]];
+    if (type == FlickrThumbnailImage) {
+        request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.record.thumbnailURL]];
+    }
+    else if(type == FlickrLargeImage){
+        request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.record.largeURL]];
+    }
 
     
     // create an session data task to obtain and download the app icon
@@ -37,7 +43,9 @@
                                                            [[NSOperationQueue mainQueue] addOperationWithBlock: ^{
                                                                UIImage *image = [[UIImage alloc] initWithData:data];
     
-                                                                   
+                                                                if(type == FlickrThumbnailImage)
+                                                                {
+                                                                    
                                                                    if (image.size.width != 100 || image.size.height != 100)
                                                                    {
                                                                        CGSize itemSize = CGSizeMake(100, 100);
@@ -51,7 +59,10 @@
                                                                    {
                                                                        self.record.thumbnail = image;
                                                                    }
-                                             
+                                                                }
+                                                                else{
+                                                                    self.record.largeImage = image;
+                                                                }
                                                                
                                                                // call our completion handler to tell our client that our icon is ready for display
                                                                if (self.completionHandler != nil)
