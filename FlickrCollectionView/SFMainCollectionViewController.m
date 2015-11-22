@@ -85,7 +85,7 @@
     __weak SFMainCollectionViewController *weakSelf = self;
     
     [self.flickr searchFlickrInPage:(int)page WithcompletionBlock:^(NSArray *results, NSError *error) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             
             if (self.page != 1) {
                 [weakSelf.searchResults addObjectsFromArray:results];
@@ -127,6 +127,41 @@
         [iconDownloader startDownload:0];
     }
     
+}
+
+- (void)loadImagesForOnscreenRows
+{
+    if (self.searchResults.count > 0)
+    {
+        NSArray *visibleItems = [self.collectionView indexPathsForVisibleItems];
+        
+        for (NSIndexPath *indexPath in visibleItems)
+        {
+            FlickrPhoto * pItem = (self.searchResults)[indexPath.item];
+            
+            if (!pItem.thumbnail)
+                // Avoid the app icon download if the app already has an icon
+            {
+                [self startImageDownload:pItem forIndexPath:indexPath];
+            }
+        }
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (!decelerate)
+    {
+        [self loadImagesForOnscreenRows];
+    }
+}
+
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self loadImagesForOnscreenRows];
 }
 
 #pragma mark <UICollectionViewDataSource>
@@ -181,18 +216,14 @@
 // 1
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-    FlickrPhoto *photo =
-    self.searchResults[indexPath.row];
-    // 2
-    CGSize retval = photo.thumbnail.size.width > 0 ? photo.thumbnail.size : CGSizeMake(50, 50);
-    retval.height += 25; retval.width += 25; return retval;
+    return CGSizeMake(80, 80);
 }
 
-// 3
-- (UIEdgeInsets)collectionView:
-(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(20, 20, 20, 20);
-}
+//// 3
+//- (UIEdgeInsets)collectionView:
+//(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+//    return UIEdgeInsetsMake(20, 20, 20, 20);
+//}
 
 #pragma mark -- Refresh controller setup.
 - (void)loadCustomRefreshControlContents{
