@@ -11,6 +11,12 @@
 #import "FlickrPhoto.h"
 #import "FlickrCollectionViewCell.h"
 #import "ImageDownloader.h"
+#import "SFImageDetailViewController.h"
+
+#define CollectionViewTopEdges 10.0
+#define CollectionViewLeftEdges 5.0
+#define CollectionViewRightEdges 5.0
+#define CollectionViewCellSpace 2.0
 
 @interface SFMainCollectionViewController ()
 
@@ -31,6 +37,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self.collectionView setContentInset:UIEdgeInsetsMake(CollectionViewTopEdges, CollectionViewLeftEdges, 0, CollectionViewRightEdges)];
     
     UIImage *headerImage = [UIImage imageNamed:@"SharkFeedSmall"];
     UIImageView *headerImageView = [[UIImageView alloc] initWithImage: headerImage];
@@ -164,7 +171,8 @@
     [self loadImagesForOnscreenRows];
 }
 
-#pragma mark <UICollectionViewDataSource>
+
+#pragma mark -- UICollectionView DataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -213,17 +221,23 @@
 
 #pragma mark – UICollectionViewDelegateFlowLayout
 
-// 1
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-
-    return CGSizeMake(80, 80);
+    CGFloat width = (self.collectionView.frame.size.width - CollectionViewLeftEdges - CollectionViewRightEdges - 2*CollectionViewCellSpace)/3.0;
+    return CGSizeMake(width, width);
 }
 
-//// 3
-//- (UIEdgeInsets)collectionView:
-//(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-//    return UIEdgeInsetsMake(20, 20, 20, 20);
-//}
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+    return CollectionViewCellSpace;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return CollectionViewCellSpace;
+}
+
+- (UIEdgeInsets)collectionView:
+(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(0, 0, 0, 0);
+}
 
 #pragma mark -- Refresh controller setup.
 - (void)loadCustomRefreshControlContents{
@@ -238,5 +252,18 @@
     
     [self.refreshControll addSubview:customNibView];
 }
+
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if([[segue identifier] isEqualToString:@"ContactsViewControllerSegue"]){
+        NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
+        SFImageDetailViewController *destViewController = segue.destinationViewController;
+        NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
+        destViewController.record = (self.searchResults)[indexPath.row];
+        [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
+    }
+}
+
+
 
 @end

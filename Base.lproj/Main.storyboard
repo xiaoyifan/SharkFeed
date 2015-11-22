@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A282b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="y61-1Y-f6D">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Main Collection View Controller-->
@@ -46,6 +47,7 @@
                                 <size key="customSize" width="100" height="100"/>
                                 <connections>
                                     <outlet property="itemImageView" destination="mVy-ds-WY1" id="gPQ-nO-pg1"/>
+                                    <segue destination="iXc-4Q-gCo" kind="presentation" id="iAm-X3-646"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -59,6 +61,83 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mp2-UG-K5J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1210" y="1371"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="w8f-cG-NuM">
+            <objects>
+                <viewController storyboardIdentifier="detailViewController" id="iXc-4Q-gCo" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="mam-7g-AKM"/>
+                        <viewControllerLayoutGuide type="bottom" id="Oor-pc-nUG"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="UVb-bs-hnc">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ota-1c-Nzm">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <animations/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y11-8o-GNg">
+                                <rect key="frame" x="40" y="541" width="107" height="29"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="14"/>
+                                <state key="normal" title="   download " image="download">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DHN-HH-FzI">
+                                <rect key="frame" x="435" y="544" width="125" height="26"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="14"/>
+                                <state key="normal" title="   open in flickr" image="openinflickr">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1y6-Ch-KPb">
+                                <rect key="frame" x="0.0" y="523" width="600" height="2"/>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="2" id="w0g-5P-iBt"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MIc-bJ-7Uf">
+                                <rect key="frame" x="541" y="27" width="32" height="32"/>
+                                <animations/>
+                                <state key="normal" image="cancel"/>
+                            </button>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Oor-pc-nUG" firstAttribute="top" secondItem="DHN-HH-FzI" secondAttribute="bottom" constant="30" id="5Ht-wj-lmB"/>
+                            <constraint firstItem="Oor-pc-nUG" firstAttribute="top" secondItem="y11-8o-GNg" secondAttribute="bottom" constant="30" id="8xd-Ys-Pe5"/>
+                            <constraint firstItem="1y6-Ch-KPb" firstAttribute="leading" secondItem="UVb-bs-hnc" secondAttribute="leadingMargin" constant="-20" id="Bw8-uN-Lwg"/>
+                            <constraint firstAttribute="trailing" secondItem="Ota-1c-Nzm" secondAttribute="trailing" id="Jz0-tO-Ufk"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="MIc-bJ-7Uf" secondAttribute="trailing" constant="7" id="MYl-Tw-onG"/>
+                            <constraint firstItem="y11-8o-GNg" firstAttribute="leading" secondItem="UVb-bs-hnc" secondAttribute="leadingMargin" constant="20" id="VM0-wA-71V"/>
+                            <constraint firstItem="Ota-1c-Nzm" firstAttribute="leading" secondItem="UVb-bs-hnc" secondAttribute="leading" id="YvL-x3-2nx"/>
+                            <constraint firstItem="Ota-1c-Nzm" firstAttribute="top" secondItem="UVb-bs-hnc" secondAttribute="top" id="ae7-Nh-cIM"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="1y6-Ch-KPb" secondAttribute="trailing" id="bLK-GT-T56"/>
+                            <constraint firstItem="MIc-bJ-7Uf" firstAttribute="top" secondItem="mam-7g-AKM" secondAttribute="bottom" constant="7" id="fKd-dz-Myn"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="DHN-HH-FzI" secondAttribute="trailing" constant="20" id="m1L-ub-TdA"/>
+                            <constraint firstItem="Ota-1c-Nzm" firstAttribute="bottom" secondItem="Oor-pc-nUG" secondAttribute="top" id="osr-Jc-XMH"/>
+                            <constraint firstItem="DHN-HH-FzI" firstAttribute="top" secondItem="1y6-Ch-KPb" secondAttribute="bottom" constant="19" id="pt4-Bd-C7h"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="1y6-Ch-KPb" secondAttribute="trailing" constant="-20" id="vfD-i2-88l"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="bLK-GT-T56"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <nil key="simulatedTopBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Ws-si-Vi1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2048" y="1394"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Jmb-48-mJ1">
@@ -122,6 +201,9 @@
     <resources>
         <image name="SharkFeed" width="179" height="27"/>
         <image name="background" width="414" height="736"/>
+        <image name="cancel" width="32" height="32"/>
+        <image name="download" width="25" height="29"/>
         <image name="logo" width="181" height="85"/>
+        <image name="openinflickr" width="27" height="26"/>
     </resources>
 </document>
