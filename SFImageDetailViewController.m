@@ -23,12 +23,20 @@
     // Do any additional setup after loading the view.
     self.downloader =  [[ImageDownloader alloc] init];
     self.downloader.record = self.record;
+    __weak FlickrPhoto *weakRecord = self.record;
     __weak SFImageDetailViewController *weakSelf = self;
-    
     self.downloader.completionHandler = ^{
-        
-        if (weakSelf.downloader.record.largeImage) {
-            weakSelf.detailImageView.image = weakSelf.downloader.record.largeImage;
+        if (weakRecord.originalImage) {
+            weakSelf.detailImageView.image = weakRecord.originalImage;
+        }
+        else if (weakRecord.largeImage) {
+            weakSelf.detailImageView.image = weakRecord.largeImage;
+        }
+        else if(weakRecord.mediumImage){
+            weakSelf.detailImageView.image = weakRecord.mediumImage;
+        }
+        else if(weakRecord.thumbnail){
+            weakSelf.detailImageView.image = weakRecord.thumbnail;
         }
         
     };
@@ -48,8 +56,8 @@
 
 - (IBAction)downloadImageToAlbum:(id)sender {
     
-    if (self.record.largeImage!= nil) {
-        UIImageWriteToSavedPhotosAlbum(self.record.largeImage,
+    if (self.detailImageView.image!= nil) {
+        UIImageWriteToSavedPhotosAlbum(self.detailImageView.image,
                                        self, // send the message to 'self' when calling the callback
                                        @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
                                        NULL);

@@ -10,7 +10,7 @@
 
 @interface ImageDownloader ()
 
-@property (nonatomic, strong) NSURLSessionDataTask *sessionTask;
+//@property (nonatomic, strong) NSURLSessionDataTask *sessionTask;
 @property (nonatomic, strong) NSOperationQueue* operationQueue;
 @property (nonatomic, strong) NSMutableDictionary* operations;
 
@@ -35,12 +35,14 @@
 
 -(void) startDownload:(ImageSize)type{
     
-    if (type>ThumbnailImage && type<OriginalSize) {
+    if (type>ThumbnailImage && type<=OriginalSize) {
         [self startDownload:type-1];
     }
     
     NSURLRequest *request = nil;
-    
+    if (type == OriginalSize) {
+        request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.record.originalURL]];
+    }
     if (type == ThumbnailImage) {
         request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.record.thumbnailURL]];
     }
@@ -57,17 +59,17 @@
     
     NSBlockOperation* operation = [[NSBlockOperation alloc] init];
     
+    UIImage* image = [self imageOfSize:type];
+    if (image) return;
+    
     __weak typeof (operation) operation_ = operation;
     [operation addExecutionBlock:^{
          __strong typeof (operation) operationStrong = operation_;
         
         if (operationStrong.isCancelled) return;
         
-        UIImage* image = [self imageOfSize:type];
-        if (image) return;
-        
         // create an session data task to obtain and download the app icon
-        self.sessionTask = [[NSURLSession sharedSession] dataTaskWithRequest:request
+         [[[NSURLSession sharedSession] dataTaskWithRequest:request
                                                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                                
                                                                if (error != nil)
@@ -122,21 +124,13 @@
                                                                    
                                                                }];
                                                                
-                                                           } ];
-        
-        [self.sessionTask resume];
+                                                           } ] resume];
+    
   
     }];
         //add operation to operations dictionary (so that we can cancel)
-        if ([[self.operations allKeys] containsObject:@(type)]) {
-            NSMutableDictionary* dict = [self.operations objectForKey:@(type)];
-            [dict setObject:operation forKey:@(type)];
-        } else {
-            NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
-            [dict setObject:operation forKey:@(type)];
-            [self.operations setObject:dict forKey:@(type)];
-        }
-        
+        [self.operations setObject:operation forKey:@(type)];
+    
         //add operation to operation queue for execution
         [self.operationQueue addOperation:operation];
         
@@ -144,13 +138,12 @@
 
 - (void)cancelOperationsOfSize:(ImageSize)size {
     if (![self.operations objectForKey:@(size)]) return;
-    for (int idx=0; idx<size; idx++) {
-        NSOperation* operation = [[self.operations objectForKey:@(size)] objectForKey:@(idx)];
+    for (int idx=0; idx<=size; idx++) {
+        
+        NSOperation* operation = [self.operations objectForKey:@(idx)];
         [operation cancel];
-        [[self.operations objectForKey:@(size)] removeObjectForKey:@(idx)];
-        if ([[self.operations objectForKey:@(size)] allKeys].count == 0) {
-            [self.operations removeObjectForKey:@(size)];
-        }
+        
+        [self.operations removeObjectForKey:@(idx)];
     }
 }
 
@@ -172,12 +165,6 @@
         default:
             break;
     }
-}
-
-- (void)cancelDownload
-{
-    [self.sessionTask cancel];
-    _sessionTask = nil;
 }
 
 @end
