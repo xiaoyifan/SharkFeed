@@ -19,4 +19,11 @@
 @property(nonatomic) NSInteger server;
 @property(nonatomic,strong) NSString *secret;
 
+@property(nonatomic, strong) NSString *thumbnailURL;
+@property(nonatomic, strong) NSString *largeURL;
+@property(nonatomic, strong) NSString *photoDescription;
+
+@property (nonatomic, strong) NSString * author;
+@property (nonatomic, strong) NSString * title;
+
 @end

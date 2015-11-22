@@ -20,17 +20,33 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="nts-IC-hf1" customClass="flickerPhotoCell">
-                                <rect key="frame" x="0.0" y="64" width="86" height="76"/>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="flickerPhotoCell" id="nts-IC-hf1" customClass="FlickrCollectionViewCell">
+                                <rect key="frame" x="0.0" y="64" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="86" height="76"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mVy-ds-WY1">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                            <animations/>
+                                        </imageView>
+                                    </subviews>
                                     <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <animations/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="mVy-ds-WY1" firstAttribute="top" secondItem="nts-IC-hf1" secondAttribute="top" id="7wa-EM-mGL"/>
+                                    <constraint firstItem="mVy-ds-WY1" firstAttribute="leading" secondItem="nts-IC-hf1" secondAttribute="leading" id="OwZ-mP-7wX"/>
+                                    <constraint firstAttribute="trailing" secondItem="mVy-ds-WY1" secondAttribute="trailing" id="R43-id-QS2"/>
+                                    <constraint firstAttribute="bottom" secondItem="mVy-ds-WY1" secondAttribute="bottom" id="wlO-oa-qyJ"/>
+                                </constraints>
+                                <size key="customSize" width="100" height="100"/>
+                                <connections>
+                                    <outlet property="itemImageView" destination="mVy-ds-WY1" id="gPQ-nO-pg1"/>
+                                </connections>
                             </collectionViewCell>
                         </cells>
                         <connections>

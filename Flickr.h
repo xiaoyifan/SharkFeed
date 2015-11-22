@@ -17,8 +17,9 @@ typedef void (^FlickrPhotoCompletionBlock)(UIImage *photoImage, NSError *error);
 @interface Flickr : NSObject
 
 @property(strong) NSString *apiKey;
+@property (nonatomic, assign) NSInteger pageNum;
 
-- (void)searchFlickrWithcompletionBlock:(FlickrSearchCompletionBlock) completionBlock;
+- (void)searchFlickrInPage:(int)page WithcompletionBlock:(FlickrSearchCompletionBlock) completionBlock;
 + (void)loadImageForPhoto:(FlickrPhoto *)flickrPhoto thumbnail:(BOOL)thumbnail completionBlock:(FlickrPhotoCompletionBlock) completionBlock;
 + (NSString *)flickrPhotoURLForFlickrPhoto:(FlickrPhoto *) flickrPhoto size:(NSString *) size;
 

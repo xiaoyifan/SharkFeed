@@ -9,11 +9,16 @@
 #import "Flickr.h"
 #import "FlickrPhoto.h"
 
+@interface Flickr ()
+
+@property (nonatomic, strong) NSOperationQueue *queue;
+
+@end
 @implementation Flickr
 
-+ (NSString *)flickrSearchURL
++ (NSString *)flickrSearchURLForPage:(int)page
 {
-    return [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=%@&tags=shark&format=json&nojsoncallback=1&page=1&extras=url_t,url_c,url_l,url_o", apiKey];
+    return [NSString stringWithFormat:@"https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=%@&tags=shark&format=json&nojsoncallback=1&page=%d&extras=url_t,url_c,url_l,url_o", apiKey,page];
 }
 
 + (NSString *)flickrPhotoURLForFlickrPhoto:(FlickrPhoto *) flickrPhoto size:(NSString *) size
@@ -25,9 +30,9 @@
     return [NSString stringWithFormat:@"http://farm%ld.staticflickr.com/%ld/%lld_%@_%@.jpg",(long)flickrPhoto.farm,(long)flickrPhoto.server,flickrPhoto.photoID,flickrPhoto.secret,size];
 }
 
-- (void)searchFlickrWithcompletionBlock:(FlickrSearchCompletionBlock) completionBlock
+- (void)searchFlickrInPage:(int)page WithcompletionBlock:(FlickrSearchCompletionBlock) completionBlock
 {
-    NSString *searchURL = [Flickr flickrSearchURL];
+    NSString *searchURL = [Flickr flickrSearchURLForPage:page];
     
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
@@ -43,21 +48,20 @@
                 NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
                 
                 if (httpResp.statusCode == 200) {
+                    self.queue = [NSOperationQueue new];
                     NSError *jsonError;
                     NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data
                                                                                options:NSJSONReadingAllowFragments
                                                                                  error:&jsonError];
-                                        
-                    /**
-                     *  Description
-                     */
                     
-                    if(error != nil)
+                    if(jsonError != nil)
                     {
                         completionBlock(nil,error);
                     }
                     else
                     {
+                        self.pageNum = [[dictionary valueForKeyPath:@"photos.pages"] integerValue];
+                        
                         NSString * status = dictionary[@"stat"];
                         if ([status isEqualToString:@"fail"]) {
                             NSError * error = [[NSError alloc] initWithDomain:@"FlickrSearch" code:0 userInfo:@{NSLocalizedFailureReasonErrorKey: dictionary[@"message"]}];
@@ -73,13 +77,9 @@
                                 photo.server = [objPhoto[@"server"] intValue];
                                 photo.secret = objPhoto[@"secret"];
                                 photo.photoID = [objPhoto[@"id"] longLongValue];
-                                
-                                NSString *searchURL = [Flickr flickrPhotoURLForFlickrPhoto:photo size:@"m"];
-                                NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:searchURL]
-                                                                          options:0
-                                                                            error:&error];
-                                UIImage *image = [UIImage imageWithData:imageData];
-                                photo.thumbnail = image;
+                                photo.thumbnailURL = objPhoto[@"url_t"];
+                                photo.largeURL = objPhoto[@"url_l"];
+                                photo.title = objPhoto[@"title"];
                                 
                                 [flickrPhotos addObject:photo];
                             }
@@ -88,10 +88,6 @@
                         }
                     }
                     
-                    
-                    /**
-                     *  Description
-                     */
                     
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 }
