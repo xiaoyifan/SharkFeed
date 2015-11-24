@@ -61,6 +61,7 @@
                             completionBlock(nil, error);
                         } else {
                             
+                            //Parse photos to array of photo objects. 
                             NSArray *objPhotos = dictionary[@"photos"][@"photo"];
                             NSMutableArray *flickrPhotos = [NSMutableArray new];
                             for(NSMutableDictionary *objPhoto in objPhotos)
@@ -135,6 +136,7 @@
                             
                             NSMutableDictionary *userDict = dictionary[@"photo"][@"owner"];
 
+                            //Parse the dictionary to user object
                             FlickrUser *user = [FlickrUser new];
                             user.user_id = userDict[@"nsid"];
                             user.username = userDict[@"username"];

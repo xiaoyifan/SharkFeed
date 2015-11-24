@@ -24,7 +24,7 @@
     self.splashScreenController = [storyboard instantiateViewControllerWithIdentifier:@"splashScreen"];
     [self.window addSubview:self.splashScreenController.view];
     [self.window makeKeyAndVisible];
-    [NSTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(onSlashScreenDone) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:1.5f target:self selector:@selector(onSlashScreenDone) userInfo:nil repeats:NO];
     
     return YES;
 }
@@ -32,7 +32,7 @@
 -(void)onSlashScreenDone{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     [self.splashScreenController.view removeFromSuperview];
-    self.flickrViewController = [storyboard instantiateViewControllerWithIdentifier:@"flickrPhotoController"];
+    self.flickrViewController = [storyboard instantiateViewControllerWithIdentifier:photoViewControllerReuseIdentidier];
     [self.window addSubview:self.flickrViewController.view];
     [self.window makeKeyAndVisible];
     self.window.rootViewController = self.flickrViewController;

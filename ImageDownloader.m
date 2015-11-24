@@ -10,7 +10,6 @@
 
 @interface ImageDownloader ()
 
-//@property (nonatomic, strong) NSURLSessionDataTask *sessionTask;
 @property (nonatomic, strong) NSOperationQueue* operationQueue;
 @property (nonatomic, strong) NSMutableDictionary* operations;
 
@@ -18,6 +17,8 @@
 
 
 @implementation ImageDownloader
+
+#pragma mark -- Accessors
 
 -(NSOperationQueue *)operationQueue{
     if (!_operationQueue) {
@@ -32,6 +33,8 @@
     }
     return _operations;
 }
+
+#pragma mark -- Instance method
 
 -(void) startDownload:(ImageSize)type{
     
@@ -93,7 +96,7 @@
                                [[NSOperationQueue mainQueue] addOperationWithBlock: ^{
                                    UIImage *image = [[UIImage alloc] initWithData:data];
                                    
-                                   
+                                   //Cache the downloaded data to related key.
                                    switch (type) {
                                        case ThumbnailImage:
                                        {
@@ -128,7 +131,8 @@
                                    }
                                    
                                    [self cancelOperationsOfSize:type];
-                                   // call our completion handler to tell our client that our icon is ready for display
+                                   // If image is downlaod, we don't havr to download the smaller sizes.
+                                   
                                    if (self.completionHandler != nil)
                                    {
                                        dispatch_async(dispatch_get_main_queue(), ^{
@@ -145,22 +149,22 @@
   
     }];
     
-        //add operation to operations dictionary (so that we can cancel)
+        //Mark the operation in the dictionary, so we could get it later.
         [self.operations setObject:operation forKey:@(type)];
     
-        //add operation to operation queue for execution
+        //add operation to queue.
         [self.operationQueue addOperation:operation];
         
 }
 
 - (void)cancelOperationsOfSize:(ImageSize)size {
     if (![self.operations objectForKey:@(size)]) return;
-    for (int idx=0; idx<=size; idx++) {
+    for (int i=0; i<=size; i++) {
         
-        NSOperation* operation = [self.operations objectForKey:@(idx)];
+        NSOperation* operation = [self.operations objectForKey:@(i)];
         [operation cancel];
         
-        [self.operations removeObjectForKey:@(idx)];
+        [self.operations removeObjectForKey:@(i)];
     }
 }
 

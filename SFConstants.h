@@ -16,5 +16,10 @@ static NSString *const apiKey = @"949e98778755d1982f537d56236bbb42";
 #pragma mark -- Flickr Main CollectionView Constants
 static NSString *const mainCollectionViewCellReuseIdentifier = @"flickerPhotoCell";
 
+#pragma mark -- ViewController Identifier
+static NSString *const photoViewControllerReuseIdentidier = @"flickrPhotoController";
+
+#pragma mark -- Nib file identidiers
+static NSString *const refreshControllerNibName = @"SharkFeedRefreshControl";
 
 #endif /* SFConstants_h */

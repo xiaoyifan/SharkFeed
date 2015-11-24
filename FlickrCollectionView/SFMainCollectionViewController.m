@@ -43,12 +43,7 @@
     UIImageView *headerImageView = [[UIImageView alloc] initWithImage: headerImage];
     self.navigationItem.titleView = headerImageView;
     
-    self.refreshControll = [[UIRefreshControl alloc] init];
-    self.refreshControll.tintColor = [UIColor clearColor];
-    self.refreshControll.backgroundColor = [UIColor clearColor];
-    [self.collectionView addSubview:self.refreshControll];
-    [self loadCustomRefreshControlContents];
-    [self.refreshControll addTarget:self action:@selector(refreshFeeds) forControlEvents:UIControlEventValueChanged];
+    [self setupRefreshControll];
     
     self.searchResults = [@[] mutableCopy];
     self.flickr = [[Flickr alloc] init];
@@ -59,6 +54,15 @@
     
 }
 
+- (void)setupRefreshControll{
+    self.refreshControll = [[UIRefreshControl alloc] init];
+    self.refreshControll.tintColor = [UIColor clearColor];
+    self.refreshControll.backgroundColor = [UIColor clearColor];
+    [self.collectionView addSubview:self.refreshControll];
+    [self loadCustomRefreshControlContents];
+    [self.refreshControll addTarget:self action:@selector(refreshFeeds) forControlEvents:UIControlEventValueChanged];
+}
+
 - (void)viewWillAppear:(BOOL)animated{
     
     if (self.searchResults != nil && self.searchResults.count != 0) {
@@ -67,8 +71,8 @@
         self.page = 1;
         [self searchFlickrInPage:(int)self.page];
     }
-    //if the results array contains data, load them in the collectionView
-    //if the array is empty, fetch the first page
+    //If the results array is not empty, load it
+    //If the array is empty, fetch the feeds from api
     
 }
 
@@ -113,7 +117,7 @@
     }];
 }
 
-
+//Image downloading method
 -(void)startImageDownload:(FlickrPhoto *)record forIndexPath:(NSIndexPath *)indexPath{
     
     ImageDownloader *iconDownloader = (self.downloadingTask)[indexPath];
@@ -136,22 +140,23 @@
     
 }
 
-- (void)loadImagesForOnscreenRows
+- (void)loadItemsOnScreen
 {
     if (self.searchResults.count > 0)
     {
         NSArray *visibleItems = [self.collectionView indexPathsForVisibleItems];
+        //get visible items
         
         for (NSIndexPath *indexPath in visibleItems)
         {
             FlickrPhoto * pItem = (self.searchResults)[indexPath.item];
             
             if (![pItem.imageCache objectForKey:pItem.thumbnailURL])
-                // Avoid the app icon download if the app already has an icon
             {
                 [self startImageDownload:pItem forIndexPath:indexPath];
             }
         }
+        //If the images in cell is not loaded, start to download it.
     }
 }
 
@@ -161,14 +166,14 @@
 {
     if (!decelerate)
     {
-        [self loadImagesForOnscreenRows];
+        [self loadItemsOnScreen];
     }
 }
 
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    [self loadImagesForOnscreenRows];
+    [self loadItemsOnScreen];
 }
 
 
@@ -196,7 +201,7 @@
         {
             [self startImageDownload:photoItem forIndexPath:indexPath];
         }
-        // if a download is deferred or in progress, return a placeholder image
+        //If the view is not dragging ot accelerating, load the images.
         cellImageView.image = [UIImage imageNamed:@"placeholder"];
         
     }
@@ -243,7 +248,7 @@
 #pragma mark -- Refresh controller setup.
 - (void)loadCustomRefreshControlContents{
     
-    NSArray *customViews = [[NSBundle mainBundle] loadNibNamed:@"SharkFeedRefreshControl" owner:self options:nil];
+    NSArray *customViews = [[NSBundle mainBundle] loadNibNamed:refreshControllerNibName owner:self options:nil];
     UIView *customNibView = [customViews objectAtIndex:0];
     
     CGRect frame = CGRectMake(self.refreshControll.bounds.origin.x, self.refreshControll.bounds.origin.y, self.refreshControll.bounds.size.width, 100);
