@@ -15,6 +15,5 @@
 @property (nonatomic, copy) void (^completionHandler)(void);
 
 - (void)startDownload:(ImageSize)type;
-- (void)cancelDownload;
 
 @end

@@ -250,10 +250,10 @@
             </objects>
             <point key="canvasLocation" x="234" y="983"/>
         </scene>
-        <!--Splash Screen View Controller-->
+        <!--View Controller-->
         <scene sceneID="gUm-pF-Ehi">
             <objects>
-                <viewController storyboardIdentifier="splashScreen" id="y61-1Y-f6D" customClass="SFSplashScreenViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="splashScreen" id="y61-1Y-f6D" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="RO3-Bd-GFE"/>
                         <viewControllerLayoutGuide type="bottom" id="bil-Im-2li"/>

@@ -126,7 +126,7 @@
             FlickrCollectionViewCell *cell = (FlickrCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
             UIImageView *imageView = cell.itemImageView;
             
-            imageView.image = record.thumbnail;
+            imageView.image = [record.imageCache objectForKey:record.thumbnailURL];
             [self.downloadingTask removeObjectForKey:indexPath];
             
         }];
@@ -146,7 +146,7 @@
         {
             FlickrPhoto * pItem = (self.searchResults)[indexPath.item];
             
-            if (!pItem.thumbnail)
+            if (![pItem.imageCache objectForKey:pItem.thumbnailURL])
                 // Avoid the app icon download if the app already has an icon
             {
                 [self startImageDownload:pItem forIndexPath:indexPath];
@@ -185,11 +185,12 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
     FlickrCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:mainCollectionViewCellReuseIdentifier forIndexPath:indexPath];
     UIImageView *cellImageView = cell.itemImageView;
     
     FlickrPhoto *photoItem = self.searchResults[indexPath.row];
-    if (!photoItem.thumbnail) {
+    if (![photoItem.imageCache objectForKey:photoItem.thumbnailURL]) {
         
         if (self.collectionView.dragging == NO && self.collectionView.decelerating == NO)
         {
@@ -201,7 +202,7 @@
     }
     else
     {
-        cellImageView.image = photoItem.thumbnail;
+        cellImageView.image = [photoItem.imageCache objectForKey:photoItem.thumbnailURL];
     }
 
     return cell;

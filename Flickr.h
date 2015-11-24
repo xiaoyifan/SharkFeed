@@ -10,8 +10,7 @@
 #import <UIKit/UIKit.h>
 
 #import "FlickrUser.h"
-
-@class FlickrPhoto;
+#import "FlickrPhoto.h"
 
 typedef void (^FlickrSearchCompletionBlock)(NSArray *results, NSError *error);
 typedef void (^FlickrUserCompletionBlock)(FlickrUser *user, NSError *error);

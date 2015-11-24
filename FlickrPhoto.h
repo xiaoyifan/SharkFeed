@@ -11,16 +11,12 @@
 
 typedef enum {
     ThumbnailImage = 0,
-    MediumImage,
-    LargeImage,
-    OriginalSize
+    MediumSizeImage,
+    LargeSizeImage,
+    OriginalSizeImage
 } ImageSize;
 
 @interface FlickrPhoto : NSObject
-@property(nonatomic,strong) UIImage *thumbnail;
-@property(nonatomic, strong) UIImage *mediumImage;
-@property(nonatomic,strong) UIImage *largeImage;
-@property(nonatomic, strong) UIImage *originalImage;
 
 // Lookup info
 @property(nonatomic) long long photoID;
@@ -37,5 +33,7 @@ typedef enum {
 
 @property (nonatomic, strong) NSString * author;
 @property (nonatomic, strong) NSString * title;
+
+@property (nonatomic, strong) NSCache *imageCache;
 
 @end

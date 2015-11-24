@@ -7,14 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SFSplashScreenViewController.h"
 #import "SFMainCollectionViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (nonatomic, retain) SFSplashScreenViewController *splashScreenController;
+@property (nonatomic, retain) UIViewController *splashScreenController;
 @property (nonatomic, retain) SFMainCollectionViewController * flickrViewController;
 
 @end

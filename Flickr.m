@@ -7,7 +7,6 @@
 //
 
 #import "Flickr.h"
-#import "FlickrPhoto.h"
 
 @interface Flickr ()
 
@@ -63,7 +62,7 @@
                         } else {
                             
                             NSArray *objPhotos = dictionary[@"photos"][@"photo"];
-                            NSMutableArray *flickrPhotos = [@[] mutableCopy];
+                            NSMutableArray *flickrPhotos = [NSMutableArray new];
                             for(NSMutableDictionary *objPhoto in objPhotos)
                             {
                                 FlickrPhoto *photo = [[FlickrPhoto alloc] init];
@@ -77,6 +76,7 @@
                                 photo.originalURL = objPhoto[@"url_o"];
                                 photo.author = objPhoto[@"owner"];
                                 photo.title = objPhoto[@"title"];
+                                photo.imageCache = [NSCache new];
                                 
                                 [flickrPhotos addObject:photo];
                             }
@@ -84,7 +84,6 @@
                             completionBlock(flickrPhotos,nil);
                         }
                     }
-                    
                     
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 }
@@ -148,8 +147,6 @@
                         }
                     }
                     
-                    
-                    
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 }
                 else{
@@ -194,9 +191,7 @@
                     
                 }
                 
-            }] resume];
-    
-    
+            }] resume];  
     
 }
 

@@ -43,21 +43,22 @@
     __weak FlickrPhoto *weakRecord = self.record;
     __weak SFImageDetailViewController *weakSelf = self;
     self.downloader.completionHandler = ^{
-        if (weakRecord.originalImage) {
-            weakSelf.detailImageView.image = weakRecord.originalImage;
+        
+        if ([weakSelf.record.imageCache objectForKey:weakRecord.originalURL]) {
+            weakSelf.detailImageView.image = [weakSelf.record.imageCache objectForKey:weakRecord.originalURL];
         }
-        else if (weakRecord.largeImage) {
-            weakSelf.detailImageView.image = weakRecord.largeImage;
+        else if([weakSelf.record.imageCache objectForKey:weakRecord.largeURL]){
+            weakSelf.detailImageView.image = [weakSelf.record.imageCache objectForKey:weakRecord.largeURL];
         }
-        else if(weakRecord.mediumImage){
-            weakSelf.detailImageView.image = weakRecord.mediumImage;
+        else if([weakSelf.record.imageCache objectForKey:weakRecord.mediumURL]){
+            weakSelf.detailImageView.image = [weakSelf.record.imageCache objectForKey:weakRecord.mediumURL];
         }
-        else if(weakRecord.thumbnail){
-            weakSelf.detailImageView.image = weakRecord.thumbnail;
+        else if([weakSelf.record.imageCache objectForKey:weakRecord.thumbnailURL]){
+            weakSelf.detailImageView.image = [weakSelf.record.imageCache objectForKey:weakRecord.thumbnailURL];
         }
         
     };
-    [self.downloader startDownload:LargeImage];
+    [self.downloader startDownload:OriginalSizeImage];
     [self searchOwnerOfPhoto:self.record.photoID];
 }
 
