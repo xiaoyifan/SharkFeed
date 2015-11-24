@@ -99,23 +99,7 @@
                                    //Cache the downloaded data to related key.
                                    switch (type) {
                                        case ThumbnailImage:
-                                       {
-                                           if (image.size.width != 100 || image.size.height != 100)
-                                           {
-                                               CGSize itemSize = CGSizeMake(100, 100);
-                                               UIGraphicsBeginImageContextWithOptions(itemSize, NO, 0.0f);
-                                               CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
-                                               [image drawInRect:imageRect];
-                                               UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-                                               [self.record.imageCache setObject:image forKey:self.record.thumbnailURL];
-                                               UIGraphicsEndImageContext();
-                                           }
-                                           else
-                                           {
-                                               [self.record.imageCache setObject:image forKey:self.record.thumbnailURL];
-                                           }
-                                           
-                                       }
+                                           [self.record.imageCache setObject:image forKey:self.record.thumbnailURL];
                                            break;
                                         case MediumSizeImage:
                                            [self.record.imageCache setObject:image forKey:self.record.mediumURL];

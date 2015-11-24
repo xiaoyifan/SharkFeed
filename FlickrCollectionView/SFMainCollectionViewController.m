@@ -207,7 +207,17 @@
     }
     else
     {
-        cellImageView.image = [photoItem.imageCache objectForKey:photoItem.thumbnailURL];
+        
+        CGSize itemSize = [self collectionView:self.collectionView
+                                                      layout:self.collectionView.collectionViewLayout
+                                      sizeForItemAtIndexPath:indexPath];
+        UIGraphicsBeginImageContextWithOptions(itemSize, NO, 0.0f);
+        CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+        UIImage *image = [photoItem.imageCache objectForKey:photoItem.thumbnailURL];
+        [image drawInRect:imageRect];
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        cellImageView.image = image;
+        UIGraphicsEndImageContext();
     }
 
     return cell;
