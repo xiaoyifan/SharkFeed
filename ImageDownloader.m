@@ -36,6 +36,7 @@
 
 #pragma mark -- Instance method
 
+
 -(void) startDownload:(ImageSize)type{
     
     if (type>ThumbnailImage && type<=OriginalSizeImage) {
@@ -67,17 +68,14 @@
     
     UIImage* image = [self imageOfSize:type];
     if (image){
-        dispatch_async(dispatch_get_main_queue(), ^{
-
-            self.completionHandler();
-
-        });
+        
         return;
     }
     
     __weak typeof (operation) operation_ = operation;
     [operation addExecutionBlock:^{
          __strong typeof (operation) operationStrong = operation_;
+        
         
         if (operationStrong.isCancelled) return;
         
@@ -146,7 +144,7 @@
     for (int i=0; i<=size; i++) {
         
         NSOperation* operation = [self.operations objectForKey:@(i)];
-        [operation cancel];
+        [operation isCancelled];
         
         [self.operations removeObjectForKey:@(i)];
     }
